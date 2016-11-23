@@ -13,6 +13,7 @@ operator c | c == '+' = Plus
 
 data Token = TokenNumber Int
            | TokenOperator Operator
+           | TokEnd
     deriving(Show, Eq)
 
 isSomeDigit :: Char -> Bool
@@ -34,8 +35,23 @@ data Tree = SumNode Operator Tree Tree
           | NumNode Double
   deriving Show
 
-expression :: [Token] -> (Tree, [Token])
+lookAhead :: [Token] -> Token
+lookAhead [] = TokEnd
+lookAhead (x : xs) = x
 
+accept :: [Token] -> [Token]
+accept [] = error "Nothing to accept"
+accept (x : xs) = xs
+
+expression :: [Token] -> (Tree, [Token])
+expression tokens =
+   let (termTree, tokens') = term tokens
+   in
+      case lookAhead tokens' of
+         (TokenOperator operator) | elem operator [Plus, Minus] ->
+            let (expressionTree, tokens'') = expression (accept tokens')
+            in (SumNode operator termTree expressionTree, tokens'')
+         _ -> (termTree, tokens')
 
 term :: [Token] -> (Tree, [Token])
 
