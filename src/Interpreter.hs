@@ -13,7 +13,7 @@ operator c | c == '+' = Plus
 
 data Token = TokenNumber Int
            | TokenOperator Operator
-    deriving(Show)
+    deriving(Show, Eq)
 
 isSomeDigit :: Char -> Bool
 isSomeDigit c = elem c "0123456789"
