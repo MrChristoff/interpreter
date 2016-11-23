@@ -27,3 +27,11 @@ tokenize (x : xs)
    | isSomeDigit x = TokenNumber (digitToInt x) : tokenize xs
    | isSomeOp x = TokenOperator (operator x) : tokenize xs
    | otherwise = error ("Cannot tokenize " ++ [x])
+
+
+data Tree = SumNode Operator Tree Tree
+          | ProdNode Operator Tree Tree
+          | NumNode Double
+  deriving Show
+
+  
