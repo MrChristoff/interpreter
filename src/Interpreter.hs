@@ -34,4 +34,10 @@ data Tree = SumNode Operator Tree Tree
           | NumNode Double
   deriving Show
 
-  
+expression :: [Token] -> (Tree, [Token])
+
+
+term :: [Token] -> (Tree, [Token])
+
+
+factor :: [Token] -> (Tree, [Token])
