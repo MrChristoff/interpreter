@@ -54,6 +54,15 @@ expression tokens =
          _ -> (termTree, tokens')
 
 term :: [Token] -> (Tree, [Token])
+term tokens =
+  let (factorTree, tokens') = factor tokens
+  in
+     case lookAhead tokens' of
+       (TokenOperator operator) | elem operator [Times, Div] ->
+          let (termTree, tokens'') = term (accept tokens')
+          in (ProdNode operator factorTree termTree, tokens'')
+        _ -> (factorTree, tokens')
 
 
 factor :: [Token] -> (Tree, [Token])
+factor tokens = 
