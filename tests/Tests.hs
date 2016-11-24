@@ -22,9 +22,9 @@ main = hspec $ do
     it "returns an exception when unknown token is passed" $ do
       evaluate (tokenize "d") `shouldThrow` anyErrorCall
     it "returns a open parens token when passed an openening parens" $ do
-      tokenize "(" `shouldbe` [TokenParens Open]
+      tokenize "(" `shouldBe` [TokenParens Open]
     it "returns a close parens token when passed a closing parens" $ do
-      tokenize ")" `shouldbe` [TokenParens Close]
+      tokenize ")" `shouldBe` [TokenParens Close]
 
   describe "isSomeDigit" $ do
     it "should return true when passed a digit" $ do
