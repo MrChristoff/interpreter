@@ -19,6 +19,10 @@ main = hspec $ do
       tokenize "+" `shouldBe` [TokenOperator Plus]
     it "returns an exception when unknown token is passed" $ do
       evaluate (tokenize "d") `shouldThrow` anyErrorCall
+    it "returns a open parens token when passed an openening parens" $ do
+      tokenize "(" `shouldbe` [TokenParens Open]
+    it "returns a close parens token when passed a closing parens" $ do
+      tokenize ")" `shouldbe` [TokenParens Close]
 
   describe "isSomeDigit" $ do
     it "should return true when passed a digit" $ do
@@ -80,7 +84,7 @@ main = hspec $ do
       parse [TokenNumber 1.0, TokenOperator Plus, TokenNumber 1.0] `shouldBe` SumNode Plus (NumNode 1.0) (NumNode 1.0)
       -- 1+1*1
       parse [TokenNumber 1.0, TokenOperator Plus, TokenNumber 1.0, TokenOperator Times, TokenNumber 1.0] `shouldBe` SumNode Plus (NumNode 1.0) (ProdNode Times (NumNode 1.0) (NumNode 1.0))
-  
+
   describe "evaluate" $ do
     it "should return a Double when given a parse tree" $ do
       evaluateTree (NumNode 1.0) `shouldBe` 1.0

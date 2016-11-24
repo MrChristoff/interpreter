@@ -3,6 +3,9 @@ module Tokenizer where
 data Operator = Plus | Minus | Times | Div
     deriving(Show, Eq)
 
+data Parens = Open | Close
+    deriving(Show, Eq)
+
 operator :: Char -> Operator
 operator c | c == '+' = Plus
            | c == '-' = Minus
@@ -12,6 +15,7 @@ operator c | c == '+' = Plus
 data Token = TokenNumber Double
            | TokenOperator Operator
            | TokEnd
+           | TokenParens Parens
     deriving(Show, Eq)
 
 isSomeDigit :: Char -> Bool
