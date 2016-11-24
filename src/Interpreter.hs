@@ -11,7 +11,7 @@ operator c | c == '+' = Plus
            | c == '*' = Times
            | c == '/' = Div
 
-data Token = TokenNumber Int
+data Token = TokenNumber Double
            | TokenOperator Operator
            | TokEnd
     deriving(Show, Eq)
@@ -25,7 +25,7 @@ isSomeOp c = elem c "+-*/"
 tokenize :: String -> [Token]
 tokenize [] = []
 tokenize (x : xs)
-   | isSomeDigit x = TokenNumber (digitToInt x) : tokenize xs
+   | isSomeDigit x = TokenNumber (read [x]::Double) : tokenize xs
    | isSomeOp x = TokenOperator (operator x) : tokenize xs
    | otherwise = error ("Cannot tokenize " ++ [x])
 
@@ -33,7 +33,7 @@ tokenize (x : xs)
 data Tree = SumNode Operator Tree Tree
           | ProdNode Operator Tree Tree
           | NumNode Double
-  deriving Show
+  deriving (Show, Eq)
 
 lookAhead :: [Token] -> Token
 lookAhead [] = TokEnd
@@ -43,26 +43,31 @@ accept :: [Token] -> [Token]
 accept [] = error "Nothing to accept"
 accept (x : xs) = xs
 
--- expression :: [Token] -> (Tree, [Token])
--- expression tokens =
---    let (termTree, tokens') = term tokens
---    in
---       case lookAhead tokens' of
---          (TokenOperator operator) | elem operator [Plus, Minus] ->
---             let (expressionTree, tokens'') = expression (accept tokens')
---             in (SumNode operator termTree expressionTree, tokens'')
---          _ -> (termTree, tokens')
---
--- term :: [Token] -> (Tree, [Token])
--- term tokens =
---   let (factorTree, tokens') = factor tokens
---   in
---      case lookAhead tokens' of
---        (TokenOperator operator) | elem operator [Times, Div] ->
---           let (termTree, tokens'') = term (accept tokens')
---           in (ProdNode operator factorTree termTree, tokens'')
---        _ -> (factorTree, tokens')
+expression :: [Token] -> (Tree, [Token])
+expression tokens =
+   let (termTree, tokens') = term tokens
+   in
+      case lookAhead tokens' of
+         (TokenOperator op) | elem op [Plus, Minus] ->
+            let (expressionTree, tokens'') = expression (accept tokens')
+            in (SumNode op termTree expressionTree, tokens'')
+         _ -> (termTree, tokens')
 
---
--- factor :: [Token] -> (Tree, [Token])
--- factor tokens =
+term :: [Token] -> (Tree, [Token])
+term tokens =
+  let (factorTree, tokens') = factor tokens
+  in
+     case lookAhead tokens' of
+       (TokenOperator op) | elem op [Times, Div] ->
+          let (termTree, tokens'') = term (accept tokens')
+          in (ProdNode op factorTree termTree, tokens'')
+       _ -> (factorTree, tokens')
+
+
+factor :: [Token] -> (Tree, [Token])
+factor tokens =
+  case lookAhead tokens of
+    (TokenNumber int) -> (NumNode int, accept tokens)
+    _ -> error $ "Parse error on token: " ++ show tokens 
+      
+
