@@ -70,13 +70,10 @@ main = hspec $ do
       expression [TokenNumber 1.0, TokenOperator Minus, TokenNumber 1.0] `shouldBe` (SumNode Minus (NumNode 1.0) (NumNode 1.0), [])
       expression [TokenNumber 6.0, TokenOperator Div, TokenNumber 6.0] `shouldBe` (ProdNode Div (NumNode 6.0) (NumNode 6.0), [])
 
-  -- describe "parse" $ do
-  --   it "should return a parse tree of tokens" $ do
-  --     let x = tokenize "1"
-  --     parse x `shouldBe` [NumNode 1.0]
-  --   it "should return a parse tree of tokens" $ do
-  --     let x = tokenize "1+1"
-  --     parse x `shouldBe` [SumNode Plus NumNode 1.0 NumNode 1.0]
-  --   it "should return a parse tree of tokens" $ do
-  --     let x = tokenize "1*1+1"
-  --     parse x `shouldBe` [SumNode Plus NumNode 1.0 ProdNode Times NumNode 1.0 NumNode 1.0]
+  describe "parse" $ do
+    it "should return a parse tree of tokens" $ do
+      parse [TokenNumber 1.0] `shouldBe` NumNode 1.0
+      -- 1+1
+      parse [TokenNumber 1.0, TokenOperator Plus, TokenNumber 1.0] `shouldBe` SumNode Plus (NumNode 1.0) (NumNode 1.0)
+      -- 1+1*1
+      parse [TokenNumber 1.0, TokenOperator Plus, TokenNumber 1.0, TokenOperator Times, TokenNumber 1.0] `shouldBe` SumNode Plus (NumNode 1.0) (ProdNode Times (NumNode 1.0) (NumNode 1.0))

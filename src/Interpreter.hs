@@ -1,7 +1,5 @@
 module Interpreter where
 
-import Data.Char
-
 data Operator = Plus | Minus | Times | Div
     deriving(Show, Eq)
 
@@ -63,11 +61,15 @@ term tokens =
           in (ProdNode op factorTree termTree, tokens'')
        _ -> (factorTree, tokens')
 
-
 factor :: [Token] -> (Tree, [Token])
 factor tokens =
   case lookAhead tokens of
     (TokenNumber int) -> (NumNode int, accept tokens)
-    _ -> error $ "Parse error on token: " ++ show tokens 
-      
+    _ -> error $ "Parse error on token: " ++ show tokens
 
+parse :: [Token] -> Tree
+parse tokens = let (tree, tokens') = expression tokens
+               in
+                 if null tokens'
+                 then tree
+                 else error $ "Leftover tokens: " ++ show tokens'
