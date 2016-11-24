@@ -1,6 +1,7 @@
 module Main where
 
-import Interpreter
+import Tokenizer
+import Parser
 
 main :: IO ()
 main = do

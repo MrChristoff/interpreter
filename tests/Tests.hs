@@ -1,6 +1,7 @@
 module Main where
 
-import Interpreter
+import Tokenizer
+import Parser
 import Test.Hspec
 import Control.Exception (evaluate)
 
