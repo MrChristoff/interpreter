@@ -17,6 +17,8 @@ main = hspec $ do
       tokenize "1" `shouldBe` [TokenNumber 1.0]
     it "returns a op token when passed a string of operator" $ do
       tokenize "+" `shouldBe` [TokenOperator Plus]
+    it "returns multiple digit tokens" $ do
+      tokenize "123" `shouldBe` [TokenNumber 123.0]
     it "returns an exception when unknown token is passed" $ do
       evaluate (tokenize "d") `shouldThrow` anyErrorCall
 
@@ -25,6 +27,10 @@ main = hspec $ do
       isSomeDigit '1' `shouldBe` True
     it "should return false when passed anything other than a digit" $ do
       isSomeDigit 'f' `shouldBe` False
+
+  describe "fullNumber" $ do
+    it "should turn list of numbers into multi digit number" $ do 
+      fullNumber '1' "23" `shouldBe` [TokenNumber 123.0]
 
   describe "isSomeOp" $ do
     it "should return true when passed an operator" $ do
@@ -80,7 +86,7 @@ main = hspec $ do
       parse [TokenNumber 1.0, TokenOperator Plus, TokenNumber 1.0] `shouldBe` SumNode Plus (NumNode 1.0) (NumNode 1.0)
       -- 1+1*1
       parse [TokenNumber 1.0, TokenOperator Plus, TokenNumber 1.0, TokenOperator Times, TokenNumber 1.0] `shouldBe` SumNode Plus (NumNode 1.0) (ProdNode Times (NumNode 1.0) (NumNode 1.0))
-  
+
   describe "evaluate" $ do
     it "should return a Double when given a parse tree" $ do
       evaluateTree (NumNode 1.0) `shouldBe` 1.0
@@ -94,3 +100,4 @@ main = hspec $ do
   describe "interpret" $ do
     it "should return a Double when given a string" $ do
       interpret "1+3*6/2-1" `shouldBe` 9.0
+      interpret "10+30*10/2-1" `shouldBe` 159.0
