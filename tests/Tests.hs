@@ -50,12 +50,25 @@ main = hspec $ do
       evaluate (accept []) `shouldThrow` errorCall "Nothing to accept"
     it "should return the tail of the list it is passed" $ do
       accept [TokenNumber 1.0, TokenNumber 3.0, TokenOperator Plus] `shouldBe` [TokenNumber 3.0, TokenOperator Plus]
-  
+
   describe "factor" $ do
-    it "returns a tree and a token list given token list" $ do
+    it "returns a tree and a token list given a token list" $ do
       factor [TokenNumber 1.0] `shouldBe` (NumNode 1.0, [])
       factor [TokenNumber 1.0, TokenNumber 6.0] `shouldBe` (NumNode 1.0, [TokenNumber 6.0])
 
+  describe "term" $ do
+    it "returns a tree and a token list given a token list" $ do
+      term [TokenNumber 1.0] `shouldBe` (NumNode 1.0, [])
+      term [TokenNumber 6.0, TokenOperator Div, TokenNumber 6.0] `shouldBe` (ProdNode Div (NumNode 6.0) (NumNode 6.0), [])
+      term [TokenNumber 6.0, TokenOperator Times, TokenNumber 6.0] `shouldBe` (ProdNode Times (NumNode 6.0) (NumNode 6.0), [])
+      term [TokenNumber 1.0, TokenOperator Plus, TokenNumber 1.0] `shouldBe` (NumNode 1.0,[TokenOperator Plus,TokenNumber 1.0])
+
+  describe "expression" $ do
+    it "returns a tree and a token list given a token list" $ do
+      expression [TokenNumber 1.0] `shouldBe` (NumNode 1.0, [])
+      expression [TokenNumber 1.0, TokenOperator Plus, TokenNumber 1.0] `shouldBe` (SumNode Plus (NumNode 1.0) (NumNode 1.0), [])
+      expression [TokenNumber 1.0, TokenOperator Minus, TokenNumber 1.0] `shouldBe` (SumNode Minus (NumNode 1.0) (NumNode 1.0), [])
+      expression [TokenNumber 6.0, TokenOperator Div, TokenNumber 6.0] `shouldBe` (ProdNode Div (NumNode 6.0) (NumNode 6.0), [])
 
   -- describe "parse" $ do
   --   it "should return a parse tree of tokens" $ do
