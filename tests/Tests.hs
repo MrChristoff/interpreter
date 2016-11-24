@@ -21,6 +21,10 @@ main = hspec $ do
       tokenize "123" `shouldBe` [TokenNumber 123.0]
     it "returns an exception when unknown token is passed" $ do
       evaluate (tokenize "d") `shouldThrow` anyErrorCall
+    it "returns a open parens token when passed an openening parens" $ do
+      tokenize "(" `shouldbe` [TokenParens Open]
+    it "returns a close parens token when passed a closing parens" $ do
+      tokenize ")" `shouldbe` [TokenParens Close]
 
   describe "isSomeDigit" $ do
     it "should return true when passed a digit" $ do
@@ -29,7 +33,7 @@ main = hspec $ do
       isSomeDigit 'f' `shouldBe` False
 
   describe "fullNumber" $ do
-    it "should turn list of numbers into multi digit number" $ do 
+    it "should turn list of numbers into multi digit number" $ do
       fullNumber '1' "23" `shouldBe` [TokenNumber 123.0]
 
   describe "isSomeOp" $ do
