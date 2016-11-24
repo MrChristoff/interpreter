@@ -3,6 +3,7 @@ module Main where
 import Tokenizer
 import Parser
 import Evaluator
+import Interpreter
 import Test.Hspec
 import Control.Exception (evaluate)
 
@@ -89,3 +90,7 @@ main = hspec $ do
       evaluateTree (SumNode Plus (NumNode 1.0) (ProdNode Times (NumNode 2.0) (NumNode 1.0))) `shouldBe` 3.0
       -- 6-2/2
       evaluateTree (SumNode Minus (NumNode 6.0) (ProdNode Div (NumNode 2.0) (NumNode 2.0))) `shouldBe` 5.0
+
+  describe "interpret" $ do
+    it "should return a Double when given a string" $ do
+      interpret "1+3*6/2-1" `shouldBe` 9.0
