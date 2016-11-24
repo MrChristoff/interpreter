@@ -8,12 +8,48 @@ import Control.Exception (evaluate)
 main :: IO ()
 main = hspec $ do
   describe "tokenize" $ do
+    it "returns an empty list when passed an empty list" $ do
+      tokenize "" `shouldBe` []
     it "returns a token when passed a string" $ do
       tokenize "1" `shouldBe` [TokenNumber 1]
     it "returns a op token when passed a string of operator" $ do
       tokenize "+" `shouldBe` [TokenOperator Plus]
     it "returns an exception when unknown token is passed" $ do
       evaluate (tokenize "d") `shouldThrow` anyErrorCall
+
+  describe "isSomeDigit" $ do
+    it "should return true when passed a digit" $ do
+      isSomeDigit '1' `shouldBe` True
+    it "should return false when passed anything other than a digit" $ do
+      isSomeDigit 'f' `shouldBe` False
+
+  describe "isSomeOp" $ do
+    it "should return true when passed an operator" $ do
+      isSomeOp '+' `shouldBe` True
+    it "should return false when passed anything other than an operator" $ do
+      isSomeOp '3' `shouldBe` False
+
+  describe "operator" $ do
+    it "should return the data type 'Plus' when passed '+'" $ do
+      operator '+' `shouldBe` Plus
+    it "should return the data type 'Minus' when passed '-'" $ do
+      operator '-' `shouldBe` Minus
+    it "should return the data type 'Times' when passed '*'" $ do
+      operator '*' `shouldBe` Times
+    it "should return the data type 'Div' when passed '/'" $ do
+      operator '/' `shouldBe` Div
+
+  describe "lookAhead" $ do
+    it "returns an empty list when passed an empty list" $ do
+      lookAhead [] `shouldBe` TokEnd
+    it "should return the head of the list it is passed" $ do
+      lookAhead [TokenNumber 1, TokenNumber 3, TokenOperator Plus] `shouldBe` TokenNumber 1
+
+  describe "accept" $ do
+    it "returns an empty list when passed an empty list" $ do
+      evaluate (accept []) `shouldThrow` errorCall "Nothing to accept"
+    it "should return the tail of the list it is passed" $ do
+      accept [TokenNumber 1, TokenNumber 3, TokenOperator Plus] `shouldBe` [TokenNumber 3, TokenOperator Plus]
 
   describe "parse" $ do
     it "should return a parse tree of tokens" $ do

@@ -43,26 +43,26 @@ accept :: [Token] -> [Token]
 accept [] = error "Nothing to accept"
 accept (x : xs) = xs
 
-expression :: [Token] -> (Tree, [Token])
-expression tokens =
-   let (termTree, tokens') = term tokens
-   in
-      case lookAhead tokens' of
-         (TokenOperator operator) | elem operator [Plus, Minus] ->
-            let (expressionTree, tokens'') = expression (accept tokens')
-            in (SumNode operator termTree expressionTree, tokens'')
-         _ -> (termTree, tokens')
+-- expression :: [Token] -> (Tree, [Token])
+-- expression tokens =
+--    let (termTree, tokens') = term tokens
+--    in
+--       case lookAhead tokens' of
+--          (TokenOperator operator) | elem operator [Plus, Minus] ->
+--             let (expressionTree, tokens'') = expression (accept tokens')
+--             in (SumNode operator termTree expressionTree, tokens'')
+--          _ -> (termTree, tokens')
+--
+-- term :: [Token] -> (Tree, [Token])
+-- term tokens =
+--   let (factorTree, tokens') = factor tokens
+--   in
+--      case lookAhead tokens' of
+--        (TokenOperator operator) | elem operator [Times, Div] ->
+--           let (termTree, tokens'') = term (accept tokens')
+--           in (ProdNode operator factorTree termTree, tokens'')
+--        _ -> (factorTree, tokens')
 
-term :: [Token] -> (Tree, [Token])
-term tokens =
-  let (factorTree, tokens') = factor tokens
-  in
-     case lookAhead tokens' of
-       (TokenOperator operator) | elem operator [Times, Div] ->
-          let (termTree, tokens'') = term (accept tokens')
-          in (ProdNode operator factorTree termTree, tokens'')
-        _ -> (factorTree, tokens')
-
-
-factor :: [Token] -> (Tree, [Token])
-factor tokens = 
+--
+-- factor :: [Token] -> (Tree, [Token])
+-- factor tokens =
