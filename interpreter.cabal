@@ -15,7 +15,8 @@ cabal-version:       >=1.10
 library
   ghc-options:         -Wall
   exposed-modules:     Parser,
-                       Tokenizer
+                       Tokenizer,
+                       Evaluator
   build-depends:       base >= 4.7 && <5
   hs-source-dirs:      src
   default-language:    Haskell2010

@@ -2,6 +2,7 @@ module Main where
 
 import Tokenizer
 import Parser
+import Evaluator
 import Test.Hspec
 import Control.Exception (evaluate)
 
@@ -78,3 +79,13 @@ main = hspec $ do
       parse [TokenNumber 1.0, TokenOperator Plus, TokenNumber 1.0] `shouldBe` SumNode Plus (NumNode 1.0) (NumNode 1.0)
       -- 1+1*1
       parse [TokenNumber 1.0, TokenOperator Plus, TokenNumber 1.0, TokenOperator Times, TokenNumber 1.0] `shouldBe` SumNode Plus (NumNode 1.0) (ProdNode Times (NumNode 1.0) (NumNode 1.0))
+  
+  describe "evaluate" $ do
+    it "should return a Double when given a parse tree" $ do
+      evaluateTree (NumNode 1.0) `shouldBe` 1.0
+      -- 1+1
+      evaluateTree (SumNode Plus (NumNode 1.0) (NumNode 1.0)) `shouldBe` 2.0
+      -- 1+1*2
+      evaluateTree (SumNode Plus (NumNode 1.0) (ProdNode Times (NumNode 2.0) (NumNode 1.0))) `shouldBe` 3.0
+      -- 6-2/2
+      evaluateTree (SumNode Minus (NumNode 6.0) (ProdNode Div (NumNode 2.0) (NumNode 2.0))) `shouldBe` 5.0
