@@ -39,6 +39,12 @@ factor :: [Token] -> (Tree, [Token])
 factor tokens =
   case lookAhead tokens of
     (TokenNumber int) -> (NumNode int, accept tokens)
+    (TokenParens Open) ->
+      let (expressionTree, tokens') = expression (accept tokens)
+      in
+         if lookAhead tokens' /= TokenParens Close
+         then error $ "Missing closing bracket"
+         else (expressionTree, accept tokens')
     _ -> error $ "Parse error on token: " ++ show tokens
 
 parse :: [Token] -> Tree

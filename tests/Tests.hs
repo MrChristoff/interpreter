@@ -32,9 +32,17 @@ main = hspec $ do
     it "should return false when passed anything other than a digit" $ do
       isSomeDigit 'f' `shouldBe` False
 
+  describe "isSomeParens" $ do
+    it "should return true when passes a parens" $ do
+      isSomeParens '(' `shouldBe` True
+      isSomeParens ')' `shouldBe` True
+    it "should return false when passed anything other than a parens" $ do
+      isSomeParens '3' `shouldBe` False
+
   describe "fullNumber" $ do
     it "should turn list of numbers into multi digit number" $ do
       fullNumber '1' "23" `shouldBe` [TokenNumber 123.0]
+
 
   describe "isSomeOp" $ do
     it "should return true when passed an operator" $ do
@@ -51,6 +59,11 @@ main = hspec $ do
       operator '*' `shouldBe` Times
     it "should return the data type 'Div' when passed '/'" $ do
       operator '/' `shouldBe` Div
+
+  describe "parens" $ do
+    it "should turn a list of parens into the token Parens Open/Close" $ do
+      parens '(' `shouldBe` Open
+      parens ')' `shouldBe` Close
 
   describe "lookAhead" $ do
     it "returns an empty list when passed an empty list" $ do
@@ -90,6 +103,8 @@ main = hspec $ do
       parse [TokenNumber 1.0, TokenOperator Plus, TokenNumber 1.0] `shouldBe` SumNode Plus (NumNode 1.0) (NumNode 1.0)
       -- 1+1*1
       parse [TokenNumber 1.0, TokenOperator Plus, TokenNumber 1.0, TokenOperator Times, TokenNumber 1.0] `shouldBe` SumNode Plus (NumNode 1.0) (ProdNode Times (NumNode 1.0) (NumNode 1.0))
+      -- (3+2)/2
+      parse [TokenParens Open,TokenNumber 3.0,TokenOperator Plus,TokenNumber 2.0,TokenParens Close,TokenOperator Div,TokenNumber 2.0] `shouldBe` ProdNode Div (SumNode Plus (NumNode 3.0) (NumNode 2.0)) (NumNode 2.0)
 
   describe "evaluate" $ do
     it "should return a Double when given a parse tree" $ do
